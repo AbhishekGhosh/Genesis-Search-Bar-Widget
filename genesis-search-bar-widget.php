@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Genesis Search Bar Widget
-Description: A search bar widget for Studiopress Genesis with customizable placeholder text.
-Version: 1.0
+Description: A search bar widget for Studiopress Genesis with customizable placeholder and button text.
+Version: 1.1
 Author: Abhishek Ghosh
 */
 
@@ -24,11 +24,13 @@ class Genesis_Search_Bar_Widget extends WP_Widget {
     public function widget($args, $instance) {
         echo $args['before_widget'];
         $placeholder = !empty($instance['placeholder']) ? $instance['placeholder'] : __('Search...', 'text_domain');
+        $button_text = !empty($instance['button_text']) ? $instance['button_text'] : __('Go', 'text_domain');
         echo '<div class="genesis-search-bar-widget">
                 <form role="search" method="get" class="search-form" action="' . esc_url(home_url('/')) . '">
                     <div class="search-container">
                         <i class="fas fa-search"></i>
                         <input type="search" class="search-field" placeholder="' . esc_attr($placeholder) . '" value="" name="s">
+                        <button type="submit" class="search-button">' . esc_html($button_text) . '</button>
                     </div>
                 </form>
               </div>';
@@ -37,15 +39,21 @@ class Genesis_Search_Bar_Widget extends WP_Widget {
 
     public function form($instance) {
         $placeholder = !empty($instance['placeholder']) ? $instance['placeholder'] : '';
+        $button_text = !empty($instance['button_text']) ? $instance['button_text'] : '';
         echo '<p>
                 <label for="' . $this->get_field_id('placeholder') . '">Placeholder Text:</label>
                 <input class="widefat" id="' . $this->get_field_id('placeholder') . '" name="' . $this->get_field_name('placeholder') . '" type="text" value="' . esc_attr($placeholder) . '" />
+              </p>';
+        echo '<p>
+                <label for="' . $this->get_field_id('button_text') . '">Button Text:</label>
+                <input class="widefat" id="' . $this->get_field_id('button_text') . '" name="' . $this->get_field_name('button_text') . '" type="text" value="' . esc_attr($button_text) . '" />
               </p>';
     }
 
     public function update($new_instance, $old_instance) {
         $instance = [];
         $instance['placeholder'] = (!empty($new_instance['placeholder'])) ? sanitize_text_field($new_instance['placeholder']) : '';
+        $instance['button_text'] = (!empty($new_instance['button_text'])) ? sanitize_text_field($new_instance['button_text']) : '';
         return $instance;
     }
 }
@@ -62,7 +70,7 @@ function genesis_search_bar_widget_styles() {
             display: flex;
             align-items: center;
             background: #f5f5f5;
-            padding: 10px;
+            padding-left: 15px;
             border-radius: 25px;
         }
         .genesis-search-bar-widget .search-container i {
@@ -74,7 +82,21 @@ function genesis_search_bar_widget_styles() {
             background: none;
             outline: none;
             flex-grow: 1;
+        }
+        .genesis-search-bar-widget .search-button {
+            text-transform: none !important;
+            font-family: inherit;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
             font-size: 16px;
+            text-align: center;
+            background-color: rgb(71, 78, 90);
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+        .genesis-search-bar-widget .search-button:hover {
+            background: #444;
         }
     </style>';
 }
